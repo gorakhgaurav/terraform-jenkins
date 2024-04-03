@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "Starting user data script" >> /var/log/user-data.log
+
+# Update package lists
+sudo apt-get -y update
+
+# Install OpenJDK 17
+sudo apt-get -y install openjdk-17-jre
+
+# Install Jenkins
+sudo wget -q -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get -y update
+sudo apt-get -y install jenkins
+
+# Install Terraform
+sudo apt-get -y install unzip
+wget https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip
+unzip terraform_1.1.5_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+
+echo "Ending user data script" >> /var/log/user-data.log
