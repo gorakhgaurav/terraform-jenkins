@@ -85,8 +85,7 @@ pipeline {
       }
       steps {
         script {
-          sh "docker tag ${env.service_name} dubeyg0692/${env.namespace}/${env.service_name}:${BUILD_NUMBER}"
-          sh "docker tag ${env.service_name} dubeyg0692/${env.namespace}/${env.service_name}:${BUILD_NUMBER}"
+          sh "docker tag ${env.service_name} dubeyg0692/${env.service_name}:${BUILD_NUMBER}"
         }
       }      
     }
@@ -102,7 +101,7 @@ pipeline {
         script {
           withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PSW', usernameVariable: 'USR')]) {
             sh 'docker login -u $USR -p $PSW'
-            sh "docker push dubeyg0692/${env.namespace}/${env.service_name}:${BUILD_NUMBER}"
+            sh "docker push dubeyg0692/${env.service_name}:${BUILD_NUMBER}"
           }
         }
       }
