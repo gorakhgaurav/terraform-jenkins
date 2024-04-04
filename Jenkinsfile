@@ -3,20 +3,20 @@ pipeline {
 
     environment {
         registryCredential = 'docker-hub-credential'
-        dockerImage = 'your-docker-hub-username/your-image-name'
+        dockerImage = 'gorakhgaurav/e-commerce'
     }
 
     stages {
         stage('Cloning repository') {
             steps {
-                git credentialsId: 'github-credential', url: 'https://github.com/your/repository.git'
+                git credentialsId: 'github-credential', url: 'https://github.com/gorakhgaurav/terraform-jenkins.git'
             }
         }
 
         stage('Build Docker image') {
             steps {
                 script {
-                    docker.build dockerImage, '-f path/to/Dockerfile .'
+                    docker.build dockerImage, '-f .'
                 }
             }
         }
