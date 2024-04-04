@@ -1,0 +1,25 @@
+{
+  "name": "simple-ecommerce",
+  "version": "1.0.0",
+  "description": "A simple e-commerce website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.6"
+    // Add other dependencies as needed
+  },
+  "devDependencies": {
+    // Add any development dependencies here
+  },
+  "keywords": [
+    "ecommerce",
+    "nodejs",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "ISC"
+}
