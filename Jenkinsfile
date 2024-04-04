@@ -12,6 +12,8 @@ def branchesName() {
     return "uat"
   } else if (branchName == "master") {
     return "master"
+  } else {
+    return "other"
   }
 }
 
@@ -22,7 +24,9 @@ def defineRegistry() {
     return "uat"
   } else if (branchName == "master") {
     return "prod"
-  } 	  
+  } else {
+    return "other"
+  }
 }
 
 def defineNamespace() {
@@ -32,18 +36,22 @@ def defineNamespace() {
     return "uat"
   } else if (branchName == "master") {
     return "prod"
+  } else {
+    return "other"
   }
 }
 
 def defineNodeenv() {
   def branchName = "${env.BRANCH_NAME}"
 
-if (branchName == "UAT") {
+  if (branchName == "UAT") {
     return "uat"
-  } else (branchName == "master") {
+  } else if (branchName == "master") {
     return "production"
-  } 
-}  
+  } else {
+    return "other"
+  }
+}
 
 pipeline {
   environment {
@@ -58,11 +66,11 @@ pipeline {
     stage('Build Image') {
       when {
         anyOf {
-          branch 'UAT'
+          branch 'uat'
           branch 'master'
         }
       }
-      steps{
+      steps {
         script {
           sh "docker build -t ${env.service_name} --no-cache --build-arg namespace=${env.node_env} ."
         }
@@ -71,37 +79,29 @@ pipeline {
     stage('Tag Image') {
       when {
         anyOf {
-            branch 'UAT'
-            branch 'master'
+          branch 'uat'
+          branch 'master'
         }
       }
-      steps{
+      steps {
         script {
-          sh "docker tag ${env.service_name} hub.docker.com/${env.namespace}/${env.service_name}:${BUILD_TIMESTAMP}"
           sh "docker tag ${env.service_name} hub.docker.com/${env.namespace}/${env.service_name}:${BUILD_TIMESTAMP}"
         }
       }      
     }
 
-    stage ('Image Push to docker ') {
+    stage ('Image Push to docker') {
       when {
         anyOf {
-          branch 'UAT'
+          branch 'uat'
           branch 'master'
         }
       }
-      steps{
+      steps {
         script {
-          if  (env.branch != 'master') {  
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PSW', usernameVariable: 'USR')]) {
-              sh 'docker login -u $USR -p $PSW hub.docker.com'
-              sh "docker push hub.docker.com/${env.namespace}/${env.service_name}:${BUILD_TIMESTAMP}"
-            }
-          } else {  
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PSW', usernameVariable: 'USR')]) {
-              sh 'docker login -u $USR -p $PSW hub.docker.com'
-              sh "docker push hub.docker.com/${env.namespace}/${env.service_name}:${BUILD_TIMESTAMP}"
-            }	  
+          withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', passwordVariable: 'PSW', usernameVariable: 'USR')]) {
+            sh 'docker login -u $USR -p $PSW hub.docker.com'
+            sh "docker push hub.docker.com/${env.namespace}/${env.service_name}:${BUILD_TIMESTAMP}"
           }
         }
       }
